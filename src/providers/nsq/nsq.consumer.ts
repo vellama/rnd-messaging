@@ -1,6 +1,6 @@
 import { Reader, Message } from 'nsqjs'
-import { ConsumerConfig } from './sqs.types'
-import { Provider } from '../enums/providers.enums'
+
+import { ConsumerConfig, HostConfig } from './nsq.types'
 import { ConsumerImplementation } from '../../consumer/consumer.types'
 
 export class Consumer implements ConsumerImplementation {
@@ -20,7 +20,7 @@ export class Consumer implements ConsumerImplementation {
   }
 
   public startConsuming(handler: Function) {
-    this.reader.on('message', msg => {
+    this.reader.on('message', (msg: Message) => {
       handler(msg)
       msg.finish()
     })
@@ -31,11 +31,20 @@ export class Consumer implements ConsumerImplementation {
   }
 
   private initReader(config: ConsumerConfig): Reader {
-    const reader = new Reader(config.topic, config.channel)
+    const reader = new Reader(config.topic, config.channel, {
+      lookupdHTTPAddresses: this.formatHosts(config.hosts)
+    })
 
-    reader.on('nsqd_connected', () => (this.isReady = true))
+    reader.on('nsqd_connected', () => {
+      console.log(`consumer for ${config.topic} ready ...`)
+      this.isReady = true
+    })
     reader.on('nsqd_closed', () => (this.isReady = false))
 
     return reader
+  }
+
+  private formatHosts = (hosts: HostConfig[]): string | string[] => {
+    return hosts.map(hostConfig => `${hostConfig.host}:${hostConfig.port}`)
   }
 }

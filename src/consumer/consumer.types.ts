@@ -1,10 +1,11 @@
-import { ConsumerConfig as SQSConsumerConfig } from '../_providers/sqs/sqs.types'
-import { Consumer as SQSConsumer } from '../_providers/sqs/sqs.consumer'
+import { ConsumerConfig as NSQConsumerConfig } from '../providers/nsq/nsq.types'
+import { Consumer as NSQConsumer } from '../providers/nsq/nsq.consumer'
 
-export type ConsumerConfig = SQSConsumerConfig
+export type ConsumerConfig = NSQConsumerConfig
+export type Consumer = NSQConsumer
 
 export interface Consumers {
-  [topic: string]: SQSConsumer
+  [topic: string]: NSQConsumer
 }
 
 export interface ConsumerImplementation {
@@ -14,5 +15,3 @@ export interface ConsumerImplementation {
   startConsuming(handler: Function): void
   onDisconnected(handler: Function): void
 }
-
-export type Consumer = SQSConsumer

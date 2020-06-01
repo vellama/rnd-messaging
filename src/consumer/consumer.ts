@@ -3,8 +3,8 @@ import {
   Consumers,
   Consumer as ConsumerType
 } from './consumer.types'
-import { Consumer as SQSConsumer } from '../_providers/sqs/sqs.consumer'
-import { Provider } from '../_providers/enums/providers.enums'
+import { Consumer as NSQConsumer } from '../providers/nsq/nsq.consumer'
+import { Provider } from '../providers/enums/providers.enums'
 
 export class Consumer {
   private static consumers: Consumers
@@ -16,6 +16,8 @@ export class Consumer {
 
   public static getInstance(consumerConfig: ConsumerConfig): ConsumerType {
     if (!Consumer.hasInstance(consumerConfig)) {
+      if (!Consumer.consumers) Consumer.consumers = {}
+
       Consumer.consumers[consumerConfig.topic] = this.initConsumer(
         consumerConfig
       )
@@ -24,6 +26,7 @@ export class Consumer {
   }
 
   private static hasInstance(consumerConfig: ConsumerConfig) {
+    if (!Consumer.consumers) return false
     return !!Consumer.consumers[consumerConfig.topic]
   }
 
@@ -31,8 +34,8 @@ export class Consumer {
     let consumer: ConsumerType
 
     switch (consumerConfig.provider) {
-      case Provider.SQS:
-        consumer = Consumer.initSQSConsumer(consumerConfig)
+      case Provider.NSQ:
+        consumer = Consumer.initNSQConsumer(consumerConfig)
         break
       default:
         throw new Error('provider not supported yet')
@@ -44,21 +47,24 @@ export class Consumer {
     return consumer
   }
 
-  private static initSQSConsumer(config: ConsumerConfig): SQSConsumer {
+  private static initNSQConsumer(config: ConsumerConfig): NSQConsumer {
     if (!config.channel) throw new Error('channel is not defined')
 
-    return new SQSConsumer({
-      provider: Provider.SQS,
+    return new NSQConsumer({
+      provider: Provider.NSQ,
       topic: config.topic,
       channel: config.channel,
-      hosts: config.hosts,
-      lookupHosts: config.lookupHosts
+      hosts: config.hosts
     })
   }
 
   private static connect(consumer: ConsumerType) {
-    while (!consumer.isReady) {
+    if (!consumer.isReady) {
       consumer.connect()
+
+      setTimeout(() => {
+        this.connect(consumer)
+      }, 1000)
     }
   }
 }

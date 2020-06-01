@@ -22,6 +22,7 @@
     "@types/nsqjs": "0.9.0",
     "@typescript-eslint/eslint-plugin": "2",
     "@typescript-eslint/parser": "2",
+    "dotenv": "8.2.0",
     "eslint": "6",
     "eslint-config-standard": "14.1.1",
     "eslint-plugin-import": "2",
@@ -29,6 +30,7 @@
     "eslint-plugin-promise": "4",
     "eslint-plugin-standard": "4",
     "prettier-config-standard": "1.0.1",
+    "ts-node-dev": "1.0.0-pre.44",
     "typescript": "3.9.3"
   },
   "dependencies": {

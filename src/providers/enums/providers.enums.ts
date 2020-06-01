@@ -1,4 +1,4 @@
 export enum Provider {
   NATS = 'NATS',
-  SQS = 'SQS'
+  NSQ = 'NSQ'
 }
