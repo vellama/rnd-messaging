@@ -1,5 +1,7 @@
 # rnd-messaging
 
+This is a RnD project around a messaging lib that can handle multiple providers
+
 ## NSQ
 
 1. start nsqlookupd

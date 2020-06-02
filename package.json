@@ -1,12 +1,13 @@
 {
   "name": "rnd-messaging",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "rnd on distributed messaging",
   "main": "dist/index.ts",
   "scripts": {
-    "src:build": "npm run lint && tsc",
-    "src:watch": "npm run lint && tsc -w",
-    "lint": "eslint . --ext .js,.ts"
+    "dev:nsq:consumer": "node_modules/ts-node-dev/bin/ts-node-dev examples/nsq/consumer.server.ts",
+    "build": "npm run lint && tsc",
+    "watch": "npm run lint && tsc -w",
+    "lint": "eslint . --ext .js,.ts --fix"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "typescript": "3.9.3"
   },
   "dependencies": {
-    "nsqjs": "0.12.1"
+    "nsqjs": "0.12.1",
+    "ts-nats": "1.2.15"
   }
 }

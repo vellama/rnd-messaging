@@ -1,16 +1,41 @@
-import { EmiterConfig, Emiter as EmiterType } from './emiter.types'
+import {
+  EmiterConfig,
+  Emiter as EmiterType,
+  EmiterImplementation,
+  DispatchResponse
+} from './emiter.types'
 
-import { Emiter as NSQEmiter } from '../providers/nsq/nsq.emiter'
-import { Provider } from '../providers/enums/providers.enums'
+import { Emiter as NSQEmiter } from '../_providers/nsq/nsq.emiter'
+import { Provider } from '../enums/providers.enums'
 
-export class Emiter {
+export class Emiter implements EmiterImplementation {
   private emiter: EmiterType
 
-  public constructor(config: EmiterConfig) {
+  public constructor (config: EmiterConfig) {
     this.emiter = this.initEmiter(config)
   }
 
-  private initEmiter(config: EmiterConfig): EmiterType {
+  public connect () {
+    this.emiter.connect()
+  }
+
+  public disconnect () {
+    this.emiter.disconnect()
+  }
+
+  public onConnected (handler: Function) {
+    this.emiter.onConnected(handler)
+  }
+
+  public onDisconnected (handler: Function) {
+    this.emiter.onDisconnected(handler)
+  }
+
+  public dispatch<T> (input: T): DispatchResponse {
+    return this.emiter.dispatch(input)
+  }
+
+  private initEmiter (config: EmiterConfig): EmiterType {
     let emiter: EmiterType
 
     switch (config.provider) {
@@ -24,17 +49,7 @@ export class Emiter {
     return emiter
   }
 
-  private initSQSEmiter(config: EmiterConfig): NSQEmiter {
+  private initSQSEmiter (config: EmiterConfig): NSQEmiter {
     return new NSQEmiter(config)
-  }
-
-  private connect(emiter: EmiterType) {
-    if (!emiter.isReady) {
-      emiter.connect()
-
-      setTimeout(() => {
-        this.connect(emiter)
-      }, 1000)
-    }
   }
 }

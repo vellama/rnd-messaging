@@ -1,11 +1,7 @@
-import { Provider } from '../enums/providers.enums'
+import { Provider } from '../../enums/providers.enums'
+import { HostConfig } from '../../types/connection.types'
 
-export interface HostConfig {
-  host: string
-  port: number
-}
-
-export interface AuthConfig {
+export interface AuthenticationConfig {
   secret: string
 }
 
@@ -14,12 +10,12 @@ export interface ConsumerConfig {
   hosts: HostConfig[]
   topic: string
   channel: string
-  authConfig?: AuthConfig
+  authConfig?: AuthenticationConfig
 }
 
 export interface EmiterConfig {
   provider: Provider.NSQ
   host: HostConfig
   topic: string
-  authConfig?: AuthConfig
+  authConfig?: AuthenticationConfig
 }

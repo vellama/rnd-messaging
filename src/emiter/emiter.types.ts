@@ -1,5 +1,5 @@
-import { EmiterConfig as NSQEmiterConfig } from '../providers/nsq/nsq.types'
-import { Emiter as NSQEmiter } from '../providers/nsq/nsq.emiter'
+import { EmiterConfig as NSQEmiterConfig } from '../_providers/nsq/nsq.types'
+import { Emiter as NSQEmiter } from '../_providers/nsq/nsq.emiter'
 
 export type EmiterConfig = NSQEmiterConfig
 export type Emiter = NSQEmiter
@@ -9,10 +9,10 @@ export interface Emiters {
 }
 
 export interface EmiterImplementation {
-  isReady: boolean
   connect(): void
   disconnect(): void
   dispatch<T>(input: T): DispatchResponse
+  onConnected(handler: Function): void
   onDisconnected(handler: Function): void
 }
 
