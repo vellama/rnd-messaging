@@ -9,3 +9,7 @@ export interface AuthenticationConfig {
   password?: string
   token?: string
 }
+
+export interface ConnectionOptions {
+  autoReconnect: boolean
+}

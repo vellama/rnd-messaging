@@ -1,5 +1,8 @@
 import { Provider } from '../../enums/providers.enums'
-import { HostConfig } from '../../types/connection.types'
+import {
+  ConnectionOptions,
+  HostConfig
+} from '../../shared/types/connection.types'
 
 export interface AuthenticationConfig {
   secret: string
@@ -11,6 +14,7 @@ export interface ConsumerConfig {
   topic: string
   channel: string
   authConfig?: AuthenticationConfig
+  options?: ConnectionOptions
 }
 
 export interface EmiterConfig {
@@ -18,4 +22,5 @@ export interface EmiterConfig {
   host: HostConfig
   topic: string
   authConfig?: AuthenticationConfig
+  options?: ConnectionOptions
 }

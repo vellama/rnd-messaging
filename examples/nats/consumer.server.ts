@@ -7,20 +7,19 @@ import { ConsumerConfig } from '../../src/consumer/consumer.types'
 
 ;(() => {
   dotenv.config()
-  if (!process.env.NSQ_LOOKUP_HOSTS) throw new Error('no nsq lookup hosts')
+  if (!process.env.NATS_HOSTS) throw new Error('no nats hosts')
 
-  const hosts = formatHostConfigs(process.env.NSQ_LOOKUP_HOSTS)
+  const natsHosts = formatHostConfigs(process.env.NATS_HOSTS)
 
-  const consumerConfig: ConsumerConfig = {
-    provider: Provider.NSQ,
-    hosts: hosts,
+  const natsConfig: ConsumerConfig = {
+    provider: Provider.NATS,
+    hosts: natsHosts,
     topic: 'test-topic',
     channel: 'consumer-group'
   }
 
-  const consumer = new Consumer(consumerConfig)
-  consumer.connect()
+  const consumer = new Consumer(natsConfig)
   consumer.startConsuming((msg: any) => {
-    console.log(msg.body.toString())
+    console.log(msg)
   })
 })()

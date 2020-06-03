@@ -11,12 +11,21 @@ export interface Emiters {
 export interface EmiterImplementation {
   connect(): void
   disconnect(): void
-  dispatch<T>(input: T): DispatchResponse
+  dispatch(input: Message): Response
   onConnected(handler: Function): void
   onDisconnected(handler: Function): void
 }
 
-export interface DispatchResponse {
+export interface Response {
   status: number
+  body: any
+}
+
+export interface MessageHeader {
+  token: string
+}
+
+export interface Message {
+  header: MessageHeader
   body: any
 }

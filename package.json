@@ -4,7 +4,9 @@
   "description": "rnd on distributed messaging",
   "main": "dist/index.ts",
   "scripts": {
+    "dev:nats:consumer": "node_modules/ts-node-dev/bin/ts-node-dev examples/nats/consumer.server.ts",
     "dev:nsq:consumer": "node_modules/ts-node-dev/bin/ts-node-dev examples/nsq/consumer.server.ts",
+    "dev:nsq:consumer:singleton": "node_modules/ts-node-dev/bin/ts-node-dev examples/nsq/consumer_singleton.server.ts",
     "build": "npm run lint && tsc",
     "watch": "npm run lint && tsc -w",
     "lint": "eslint . --ext .js,.ts --fix"

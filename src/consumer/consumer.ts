@@ -3,6 +3,7 @@ import {
   Consumer as ConsumerType,
   ConsumerImplementation
 } from './consumer.types'
+import { Consumer as NATSConsumer } from '../_providers/nats/nats.consumer'
 import { Consumer as NSQConsumer } from '../_providers/nsq/nsq.consumer'
 import { Provider } from '../enums/providers.enums'
 
@@ -10,35 +11,38 @@ export class Consumer implements ConsumerImplementation {
   private config: ConsumerConfig
   public consumer: ConsumerType
 
-  public constructor (consumerConfig: ConsumerConfig) {
+  public constructor(consumerConfig: ConsumerConfig) {
     this.config = consumerConfig
     this.consumer = this.initConsumer(this.config)
   }
 
-  public connect () {
+  public connect() {
     this.consumer.connect()
   }
 
-  public disconnect () {
+  public disconnect() {
     this.consumer.disconnect()
   }
 
-  public onConnected (handler: Function) {
+  public onConnected(handler: Function) {
     this.consumer.onConnected(handler)
   }
 
-  public onDisconnected (handler: Function) {
+  public onDisconnected(handler: Function) {
     this.consumer.onDisconnected(handler)
   }
 
-  public startConsuming (handler: Function) {
+  public startConsuming(handler: Function) {
     this.consumer.startConsuming(handler)
   }
 
-  private initConsumer (consumerConfig: ConsumerConfig): ConsumerType {
+  private initConsumer(consumerConfig: ConsumerConfig): ConsumerType {
     let consumer: ConsumerType
 
     switch (consumerConfig.provider) {
+      case Provider.NATS:
+        consumer = this.initNATSConsumer(consumerConfig)
+        break
       case Provider.NSQ:
         consumer = this.initNSQConsumer(consumerConfig)
         break
@@ -49,7 +53,18 @@ export class Consumer implements ConsumerImplementation {
     return consumer
   }
 
-  private initNSQConsumer (config: ConsumerConfig): NSQConsumer {
+  private initNATSConsumer(config: ConsumerConfig): NATSConsumer {
+    if (!config.channel) throw new Error('channel is not defined')
+
+    return new NATSConsumer({
+      provider: Provider.NATS,
+      topic: config.topic,
+      channel: config.channel,
+      hosts: config.hosts
+    })
+  }
+
+  private initNSQConsumer(config: ConsumerConfig): NSQConsumer {
     if (!config.channel) throw new Error('channel is not defined')
 
     return new NSQConsumer({

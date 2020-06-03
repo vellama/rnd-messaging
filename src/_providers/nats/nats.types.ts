@@ -1,5 +1,8 @@
 import { Provider } from '../../enums/providers.enums'
-import { HostConfig } from '../../types/connection.types'
+import {
+  ConnectionOptions,
+  HostConfig
+} from '../../shared/types/connection.types'
 
 export interface AuthConfig {
   username?: string
@@ -10,6 +13,8 @@ export interface AuthConfig {
 export interface ConsumerConfig {
   provider: Provider.NATS
   hosts: HostConfig[]
-  user: string
-  password: string
+  topic: string
+  channel: string
+  authConfig?: AuthConfig
+  options?: ConnectionOptions
 }

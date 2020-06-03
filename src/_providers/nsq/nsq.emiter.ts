@@ -1,29 +1,26 @@
 import { Writer } from 'nsqjs'
 
-import {
-  EmiterImplementation,
-  DispatchResponse
-} from '../../emiter/emiter.types'
+import { EmiterImplementation, Response } from '../../emiter/emiter.types'
 import { EmiterConfig } from './nsq.types'
 
 export class Emiter implements EmiterImplementation {
   private topic: string
   private writer: Writer
 
-  public constructor (config: EmiterConfig) {
+  public constructor(config: EmiterConfig) {
     this.writer = this.initWriter(config)
     this.topic = config.topic
   }
 
-  public connect () {
+  public connect() {
     this.writer.connect()
   }
 
-  public disconnect () {
+  public disconnect() {
     this.writer.close()
   }
 
-  public dispatch<T> (input: T): DispatchResponse {
+  public dispatch<T>(input: T): Response {
     const res = this.writer.emit(this.topic, input)
 
     const status = res ? 200 : 400
@@ -36,15 +33,15 @@ export class Emiter implements EmiterImplementation {
     }
   }
 
-  public onConnected (handler: Function) {
+  public onConnected(handler: Function) {
     this.writer.on('ready', () => handler())
   }
 
-  public onDisconnected (handler: Function) {
+  public onDisconnected(handler: Function) {
     this.writer.on('closed', () => handler())
   }
 
-  private initWriter (config: EmiterConfig): Writer {
+  private initWriter(config: EmiterConfig): Writer {
     const writer = new Writer(config.host.address, config.host.port)
 
     writer.on('ready', () => {
